@@ -22,11 +22,18 @@
  */
 //trying to add bookreader
 
-(function (world) {
+(function () {
   "use strict";
-     
+  //World object -> decide on world's properties
+  window.world = window.world || {};
+
+  
+
 var domEvents;
-  var sceneNo, defaultData, sceneNum = 0, trans_obj, mouse = new THREE.Vector2(), rotSpeed = 0.1, s1,s2,s3,s4, philly, philly_object, esg_library, esg_map;
+  window.sceneNo=0, window.sceneNum = 0;
+  var defaultData, trans_obj;
+  var mouse = new THREE.Vector2(), rotSpeed = 0.1, s1,s2,s3,s4, 
+  philly, philly_object, esg_library, esg_map; //should figure if we can use mouse variable
   var layoutFlag = 0;
   var layoutCamPos= new THREE.Vector3(0,0,0), layoutCamRot;
 //gui = new dat.GUI();
@@ -50,6 +57,8 @@ var domEvents;
 //  ##     ## ##     ##    ##    ##     ## 
 //  ########  ##     ##    ##    ##     ##
 //Loading Default Position values for objects
+//below three variable of arrays should be a array of objects 
+//with properties camPos, span offset, skyboxes
 var camPos  = [
     new THREE.Vector3(121.9,118.2,-108.6),
     new THREE.Vector3(-46.9, 68.7, 83.4),
@@ -106,12 +115,15 @@ var camPos  = [
     'esg_26-7-16/15',
     'esg_26-7-16/16'
   ];
-   var hsTexture = new THREE.TextureLoader().load( 'images/here.png');
-   world.books_tex = [
+   var hsTexture = new THREE.TextureLoader().load( 'images/background-home.jpg');
+  /* world.books_tex = [
     'objects/books/a_farewell_to_arms.jpg',
     'objects/books/fcover.png',
     'objects/books/bookDiffuse.png'
-  ];
+  ];*/
+  //hot spots can be a object with properties positions an array and
+  //hot spot height and hot spot size
+  
    world.hotspots = [];
    var hotspotpos = new Array;
     hotspotpos[0] = [320,20,0];
@@ -136,7 +148,7 @@ var camPos  = [
    
     
     
-   
+ //what is default data??  
    defaultData = {
     "book1": {
       "position": { "x" : -61, "y": 77.5, "z": -109 },
@@ -168,50 +180,71 @@ var camPos  = [
 //  #### ##    ## ####    ##  
   /*
    * init the scene, setup the camera, draw 3D objects and start the game loop
+   can be muultiple functions, for each action -> init scene, setup camera, and
+   draw 3D objects
    */
-  world.init = function () {
 
-
-  // default pano is the first one
-  sceneNo = 0;
-  
-  //Camera Properties Initialization
-  var fov = 40, aspect_ratio = window.innerWidth / window.innerHeight,
-  near = 0.1, far = 50000;
-  this.cam = new THREE.PerspectiveCamera(fov, aspect_ratio, near, far);
-  
-  // Renderer Initialization
+  //Check browser compatibility and initialize renderer or fallback for unsupported
+  //browsers
+  function checkBrowserSupport() {
   if (Detector.webgl) {
-    this.renderer = new THREE.WebGLRenderer({antialias: true});
+    world.renderer = new THREE.WebGLRenderer({antialias: true});
   }
   else {
     document.getElementById('container').innerHTML = '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><h1>You need a WebGL enabled browser to proceed.</h1>';
    
   }
-  this.renderer.setSize(window.innerWidth, window.innerHeight);
-  document.getElementById('container').appendChild(this.renderer.domElement);
- 
-   
-  // Camera Controls initialization
-  this.controls = new THREE.OrbitControls(this.cam, this.renderer.domElement);
-  //this.controls.enabled = false;
-  this.controls.autoRotateSpeed = 0.3;
-  this.controls.addEventListener('change', bind(this, this.render));
+}
+/////////////////////////////////
+   //Camera Properties Initialization
+  function setCamProps() {
+    var fov = 40, aspect_ratio = window.innerWidth / window.innerHeight,
+      near = 0.1, far = 50000;
+    world.cam = new THREE.PerspectiveCamera(fov, aspect_ratio, near, far);
+  }
   
+  //Camera Controls initialization
+  function setControls(){  
+    world.controls = new THREE.OrbitControls(world.cam, world.renderer.domElement);
+    //this.controls.enabled = false;
+    world.controls.autoRotateSpeed = 0.3;
+    world.controls.addEventListener('change', bind(world, world.render));
+}
+  world.init = function () {
+
+  //set camera properties
+  setCamProps();
+
+  // Renderer Initialization
+  checkBrowserSupport();
+
+  // Set Camera Controls initialization -> should be able to pass arguments like
+  //Rotation speed and ...?
+  setControls();
+
+  this.renderer.setSize(window.innerWidth, window.innerHeight);
+  document.getElementById('world-container').appendChild(this.renderer.domElement);
+  
+  //Scene initialization
   this.scene = new THREE.Scene();
   
   domEvents   = new THREEx.DomEvents(this.cam, this.renderer.domElement);
-   makeWorld();
+
+  //this.makeHotspot()
+  this.updateScene();
+
+  //Whatever makeworld is doing, this doesnt seem to be the place for it.
+  //coz, by now the world with a mesh is created -> are we making world objects
+  //in make world?
+  //makeWorld();
   
-  //marker
+  //This should be handled by make world
+  /*
   this.makeBooks();
    THREEx.Linkify(domEvents, this.philly_selector);
     THREEx.Linkify(domEvents, this.LandForHousing_selector);
+    */
   
-  this.updateScene();
- 
-  
-
   };
   
 //  ##     ## ########  ########     ###    ######## ######## 
@@ -226,6 +259,9 @@ var camPos  = [
   world.updateScene = function () {
     //this.renderer.clear( true, false );
     this.currentSkybox = this.skyboxs[sceneNo];
+    // what is panoType?? array of 1's and 0's looks very cryptic
+    //Change Skyboxes -> which currently depends on user input,
+    //which updates a global state variable sceneNo or sceneNum
     if(panoType[sceneNo] == 0)
     {	
       this.makeSkyBox();
@@ -237,11 +273,13 @@ var camPos  = [
      this.scene.remove(world.panoMesh);
     }
     
+    //Set cam position for the particular skybox image
     this.cam.position.set(camPos[sceneNo].x,
                           camPos[sceneNo].y,
                           camPos[sceneNo].z);
     this.cam.updateProjectionMatrix;
     this.scene.add(this.cam);
+    //set cam controls -> depend on same campos with offset on x-axis
     this.controls.target.set(camPos[sceneNo].x - 0.1,
                              camPos[sceneNo].y,
                              camPos[sceneNo].z);
@@ -273,6 +311,9 @@ var camPos  = [
     }*/
     
     //marker
+    //Toggle hotspots visibility and delegate events??
+    //guess delegation can happen when they are rendered first,
+    // if we are only toggling the visibility here.
     for(var i=0; i<world.hotspots.length; i++)
     {
       if (sceneNo == i) {
@@ -282,6 +323,7 @@ var camPos  = [
 	world.hotspots[i].visible = true;
       }
     }
+    
     domEvents.addEventListener(world.hotspots[0], 'click', function(event){
       sceneNum = 0;
     }, false)
@@ -334,7 +376,7 @@ var camPos  = [
   this.renderer.render(this.scene, this.cam);
     
     //marker
-    if (sceneNum < 7) {
+    /*if (sceneNum < 7) {
       this.philly_object.visible = false;
     }
     if (sceneNum ==7) {
@@ -347,7 +389,7 @@ var camPos  = [
     else{
       this.philly_selector.visible = false;
       this.LandForHousing_selector.visible = false;
-    }
+    }*/
   };
   
 //   #######  ########      #######  ########        ## ########  ######  ########  ######  
@@ -358,6 +400,7 @@ var camPos  = [
 //  ##     ## ##     ##    ##     ## ##     ## ##    ## ##       ##    ##    ##    ##    ## 
 //   #######  ########      #######  ########   ######  ########  ######     ##     ######  
   /* Functions to draw different kinds of objects/system in the scene */
+  //who should call make hotspots?
   world.makeHotspot = function () {
     for(var i=0; i<camPos.length; i++)
     {
@@ -387,6 +430,7 @@ var camPos  = [
     
    }
       }
+
       
     
   };
@@ -891,4 +935,6 @@ console.log(requestMethod);
       this.render();
     },
   };
-})(world);
+
+  world.init();
+})();
