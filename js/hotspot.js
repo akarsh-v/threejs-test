@@ -22,3 +22,18 @@ function makeHotspot(texture, size, name) {
       
     }    
 };
+
+function makeNav(arg){
+
+  for(i=0; i<arg.length; i++){
+    var node = '<a href="#" class="btn btn-default btn-sm">'+i+'</a>';
+    var $node =  $(node);
+    $node.bind({
+      click: function(e){
+         world.updateScene(API.libCollection, e.currentTarget.text);          
+      }
+    });
+    $('#world-nav').append($node);
+  }
+}
+
