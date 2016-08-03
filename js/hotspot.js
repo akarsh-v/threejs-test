@@ -1,7 +1,7 @@
 
 //Should plan who will be the owner of makeHotspot -> caller?
 //arguments - texture, size and name
-//TODO: add Events to hotspot - added by salus sage
+//TODO: add Events to hotspot and a context - added by salus sage
 function makeHotspot(texture, size, name) {
   var hotspots = [];
   
