@@ -5,20 +5,18 @@
 function makeHotspot(texture, size, name) {
   var hotspots = [];
   
-   for(var i=0; i<world.libCollection.libRecord.length; i++)
+   for(var i=0; i<API.libCollection.libRecord.length; i++)
    {
-     console.log("hotspot", i);
-     var hotspotHeight = world.libCollection.libRecord[i].position.y;
-
+     
      hotspots[i] = new THREE.Mesh(new THREE.BoxGeometry(size,size,size),
                    new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load(texture), 
                     transparent:true}));
      hotspots[i].name = name+i;
      world.scene.add(hotspots[i]);
   
-     hotspots[i].position.set(world.libCollection.libRecord[i].position.x, 
-                              world.libCollection.libRecord[i].position.y,
-                                   world.libCollection.libRecord[i].position.z);
+     hotspots[i].position.set(API.libCollection.libRecord[i].position.x, 
+                              API.libCollection.libRecord[i].position.y,
+                                   API.libCollection.libRecord[i].position.z);
   // var linkify = THREEx.Linkify(domEvents, hotspots[i]);
 
       

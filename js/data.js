@@ -1,4 +1,11 @@
-world.libCollection = 
+/*API data for the Skybox texture, camera position, sphere rotation
+	Hotspot and more objects to be added  */
+
+
+(function() {
+window.API = {};
+
+API.libCollection = 
 {
 	type: "equirectangular",
 	hotspot: {
@@ -89,4 +96,5 @@ world.libCollection =
 }
 ]
 }
-//and 17th camera position is     new THREE.Vector3(319.3, 102.6, 215.9)
+
+})();

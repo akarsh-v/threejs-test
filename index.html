@@ -3,175 +3,103 @@
 	<head>
 		<title>BASE VLIB</title>
 		<meta charset="utf-8">
-		
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width=device-width, initial-scale=1">
 	        <!-- Bootstrap-->
-		<link rel="stylesheet" href="js/lib/bootstrap.min.css">
-		<style>
-    html,
-    body {
-        width: 100%;
-        height: 100%;
-	
-    }
-    body {
-        background-color: #000000;
-        margin: 0;
-        overflow: hidden;
-        font-family: arial;
-	
-    }
-    #container{
-	z-index:1;
-	margin: 0px;
-	padding: 0px;
-	color: white;
-     
-    }
-     
-    #hscroll {
-     top: 70%;
-     position: relative;
-     margin-bottom: -200px;
-     visibility: hidden;
-       
-	}
+		<link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/theme.css">
+	</head>
 
-#zoomp{
-	top: 48%;
-	left:4%;
-	position: absolute;
-}
-#zoomm{
-	top: 52%;
-	left:4%;
-	position: absolute;
-}
-#resizef{
-	top: 48%;
-	left:96%;
-	position: absolute;
-	
-}
-#resizes{
-	top: 48%;
-	left:96%;
-	position: absolute;
-	visibility: hidden;
-	
-}
-#autorotateplay{
-	top: 52%;
-	left:96%;
-	position: absolute;
-}
 
-#autorotatepause{
-	top: 52%;
-	left:96%;
-	position: absolute;
-	visibility: hidden;
-}
-
-	</style>
-</head>
-<body>
-
-<!-- bootstrap -->
-<script src="js/lib/jquery-1.11.3.min.js"></script>
-<script src="js/lib/bootstrap.min.js"></script>
-	  
+	<body>
 	
-<!-- navbar-->
-<nav class="navbar navbar-inverse"> 
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="index.html" >HOME</a>
+		<!-- navbar-->
+		<nav class="navbar navbar-inverse"> 
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand" href="index.html" >HOME</a>
+		    </div>
+
+		     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav">
+		        <li><a href="#" data-toggle="modal" data-target="#myModal">HELP</a></li>
+		      </ul>
+		    </div>
+		  </div>
+		</nav>
+
+		<!-- View container parentOf the world canvas appeneded in JS-->
+		<div id='world-container'>
+
+
+		<!-- help/instruction  -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="myModalLabel">Instructions</h4>
+		      </div>
+		      <div class="modal-body">
+		        <h5>Works best on Chrome for desktop.  </h5>
+			<img clas="img-responsive" src="images/instructions.jpg" alt="">
+		       </div>
+			<div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        </div>
+		    </div>
+		  </div>
+		</div>
+
+
+	
+		<!--UI - Controls-> zoom, fullsize, autoscroll-->
+		<a href="#" class="btn btn-default btn-sm" id="resizef" onclick='world.fullScreen(0)'><span class="glyphicon glyphicon-resize-full"></span> </a>
+		<a href="#" class="btn btn-default btn-sm" id="resizes" onclick='world.fullScreen(1)'><span class="glyphicon glyphicon-resize-small"></span> </a>
+		<!--zoom-->
+		<a href="#" class="btn btn-default btn-sm" id="zoomp" onclick="world.zoom(0)"><span class="glyphicon glyphicon-plus"></span> </a>
+		<a href="#" class="btn btn-default btn-sm"id="zoomm" onclick="world.zoom(1)"><span class="glyphicon glyphicon-minus"></span> </a>
+		<!--auto rotate-->
+		<a href="#" class="btn btn-default btn-sm" id="autorotateplay" onclick='world.autoRotate(0)'><span class="glyphicon glyphicon-play"></span> </a>
+		<a href="#" class="btn btn-default btn-sm" id="autorotatepause" onclick='world.autoRotate(1)'><span class="glyphicon glyphicon-pause"></span> </a>
+		<!--a href="#" class="btn btn-default btn-sm " id="closereader" onclick='world.readerMode(1)'>X </a>
+		<a href="#" class="btn btn-default btn-sm " id="closelayout" onclick='world.layoutView(1)'>X </a-->
     </div>
 
-     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li><a href="#" data-toggle="modal" data-target="#myModal">HELP</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
 
-<!-- help modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Instructions</h4>
-      </div>
-      <div class="modal-body">
-        <h5>Works best on Chrome for desktop.  </h5>
-	<img clas="img-responsive" src="images/instructions.jpg" alt="">
-       </div>
-	<div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-    </div>
-  </div>
-</div>
 
-<div id='world-container'>
-	
-<!--resize-->
-<a href="#" class="btn btn-default btn-sm" id="resizef" onclick='world.fullScreen(0)'><span class="glyphicon glyphicon-resize-full"></span> </a>
-<a href="#" class="btn btn-default btn-sm" id="resizes" onclick='world.fullScreen(1)'><span class="glyphicon glyphicon-resize-small"></span> </a>
-<!--zoom-->
-<a href="#" class="btn btn-default btn-sm" id="zoomp" onclick="world.zoom(0)"><span class="glyphicon glyphicon-plus"></span> </a>
-<a href="#" class="btn btn-default btn-sm"id="zoomm" onclick="world.zoom(1)"><span class="glyphicon glyphicon-minus"></span> </a>
-<!--auto rotate-->
-<a href="#" class="btn btn-default btn-sm" id="autorotateplay" onclick='world.autoRotate(0)'><span class="glyphicon glyphicon-play"></span> </a>
-<a href="#" class="btn btn-default btn-sm" id="autorotatepause" onclick='world.autoRotate(1)'><span class="glyphicon glyphicon-pause"></span> </a>
-<a href="#" class="btn btn-default btn-sm " id="closereader" onclick='world.readerMode(1)'>X </a>
-<a href="#" class="btn btn-default btn-sm " id="closelayout" onclick='world.layoutView(1)'>X </a>
-    
-<<<<<<< HEAD
- 
-=======
-</div>
-   
-<script>
-      window.world = window.world || {};
+       	<!-- bootstrap javascript and jquery-->
+    	<script src="js/lib/jquery-1.11.3.min.js"></script>
+    	<script src="css/bootstrap/js/bootstrap.min.js"></script>
+               
+    	<!-- javascript graphics library -->
+    	<script src="js/lib/three.min-r79.js"></script>
+    	<!-- to check if your browser supports webgl -->
+    	<script src="js/lib/Detector.js"></script>
+    	<!-- mouse controls to rotate around a fixed axis-->
+    	<script src="js/lib/OrbitControls.js"></script>
+    	<!-- mouse + key controls to manipulate objects (in our case books)-->
+    	<script src="js/lib/TransformControls.js"></script>
+    	<!-- dom events-->
+    	<script src="js/lib/threex.domevents.js"></script>
+    	<script src="js/lib/threex.linkify.js"></script>
+    	  
+    	<!-- application scripts-->
+    	<script>
+    	// create the world object -> a Threejs view, controller and model--> 
+          window.world = window.world || {};
+    	</script>
 
-     /* window.onload = function() {
-      world.init();
-      };*/
-</script>
-
-           
-	  <!-- javascript graphics library -->
-	  <script src="js/lib/three.min-r79.js"></script>
-	  <!-- to check if your browser supports webgl -->
-	  <script src="js/lib/Detector.js"></script>
-	  <!-- mouse controls to rotate around a fixed axis-->
-	  <script src="js/lib/OrbitControls.js"></script>
-	  <!-- mouse + key controls to manipulate objects (in our case books)-->
-	  <script src="js/lib/TransformControls.js"></script>
-	  <!-- dom events-->
-	  <script src="js/lib/threex.domevents.js"></script>
-	  <script src="js/lib/threex.linkify.js"></script>
-	  <!-- main script-->
-	  <script>
-      window.world = window.world || {};
-
-    </script>
-	  <script src="js/textures.js"></script>
-	 
-	  <script src="js/main.js"></script>
-
-	   <script src="js/controller.js"></script>
-	  <script src="js/hotspot.js"></script>
-	 
-	  <script src="js/esg.js"></script>
-	</body>
+    	<script src="js/data.js"></script>    	 
+    	<script src="js/main.js"></script>
+    	<script src="js/controller.js"></script>
+    	<script src="js/hotspot.js"></script>
+    	<script src="js/esg.js"></script>
+  </body>
 </html>

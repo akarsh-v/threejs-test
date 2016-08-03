@@ -98,9 +98,9 @@
   this.scene = new THREE.Scene();
 
   //initialize the scene with the first pano as default
-  this.updateScene(this.libCollection.type, this.libCollection.libRecord[0].pathToTexture,
-                   this.libCollection.libRecord[0].position, 
-                   this.libCollection.libRecord[0].rotation);
+  this.updateScene(API.libCollection.type, API.libCollection.libRecord[0].pathToTexture,
+                   API.libCollection.libRecord[0].position, 
+                   API.libCollection.libRecord[0].rotation);
 
   };
 
