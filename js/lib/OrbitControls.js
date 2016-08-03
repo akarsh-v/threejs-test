@@ -13,8 +13,6 @@
 //    Zoom - middle mouse, or mousewheel / touch: two finger spread or squish
 //    Pan - right mouse, or arrow keys / touch: three finter swipe
 
-
-//28-6-16 disabled mousewheel event handler, switched mouse button left with right.
 THREE.OrbitControls = function ( object, domElement ) {
 
 	this.object = object;
@@ -60,7 +58,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 	this.rotateSpeed = 1.0;
 
 	// Set to false to disable panning
-	this.enablePan = false;
+	this.enablePan = true;
 	this.keyPanSpeed = 7.0;	// pixels moved per arrow key push
 
 	// Set to true to automatically rotate around the target
@@ -75,7 +73,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 	this.keys = { LEFT: 37, UP: 38, RIGHT: 39, BOTTOM: 40 };
 
 	// Mouse buttons
-	this.mouseButtons = {PAN: THREE.MOUSE.LEFT, ZOOM: THREE.MOUSE.MIDDLE,  ORBIT: THREE.MOUSE.RIGHT };
+	this.mouseButtons = { ORBIT: THREE.MOUSE.LEFT, ZOOM: THREE.MOUSE.MIDDLE, PAN: THREE.MOUSE.RIGHT };
 
 	// for reset
 	this.target0 = this.target.clone();
@@ -125,7 +123,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 		var lastPosition = new THREE.Vector3();
 		var lastQuaternion = new THREE.Quaternion();
 
-		return function () {
+		return function update () {
 
 			var position = scope.object.position;
 
@@ -223,7 +221,6 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		document.removeEventListener( 'mousemove', onMouseMove, false );
 		document.removeEventListener( 'mouseup', onMouseUp, false );
-		document.removeEventListener( 'mouseout', onMouseUp, false );
 
 		window.removeEventListener( 'keydown', onKeyDown, false );
 
@@ -326,7 +323,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		var offset = new THREE.Vector3();
 
-		return function( deltaX, deltaY ) {
+		return function pan ( deltaX, deltaY ) {
 
 			var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
@@ -543,7 +540,6 @@ THREE.OrbitControls = function ( object, domElement ) {
 				pan( 0, scope.keyPanSpeed );
 				scope.update();
 				break;
-                            console.log('something');
 
 			case scope.keys.BOTTOM:
 				pan( 0, - scope.keyPanSpeed );
@@ -705,7 +701,6 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 			document.addEventListener( 'mousemove', onMouseMove, false );
 			document.addEventListener( 'mouseup', onMouseUp, false );
-			document.addEventListener( 'mouseout', onMouseUp, false );
 
 			scope.dispatchEvent( startEvent );
 
@@ -749,7 +744,6 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		document.removeEventListener( 'mousemove', onMouseMove, false );
 		document.removeEventListener( 'mouseup', onMouseUp, false );
-		document.removeEventListener( 'mouseout', onMouseUp, false );
 
 		scope.dispatchEvent( endEvent );
 
@@ -896,14 +890,14 @@ THREE.OrbitControls = function ( object, domElement ) {
 	scope.domElement.addEventListener( 'contextmenu', onContextMenu, false );
 
 	scope.domElement.addEventListener( 'mousedown', onMouseDown, false );
-	//scope.domElement.addEventListener( 'mousewheel', onMouseWheel, false );
+	scope.domElement.addEventListener( 'mousewheel', onMouseWheel, false );
 	scope.domElement.addEventListener( 'MozMousePixelScroll', onMouseWheel, false ); // firefox
 
 	scope.domElement.addEventListener( 'touchstart', onTouchStart, false );
 	scope.domElement.addEventListener( 'touchend', onTouchEnd, false );
 	scope.domElement.addEventListener( 'touchmove', onTouchMove, false );
 
-	scope.domElement.addEventListener( 'keydown', onKeyDown, false );
+	window.addEventListener( 'keydown', onKeyDown, false );
 
 	// force an update at start
 
