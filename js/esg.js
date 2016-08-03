@@ -1,7 +1,8 @@
-function makeWorld() {
+function makeWorldObjects() {
     var testcube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({color:0xffffff}));
     world.scene.add(testcube);
     testcube.name ='testcube';
+   
     this.axisHelper = new THREE.AxisHelper( 8500 );
     world.scene.add( this.axisHelper );
     
@@ -12,6 +13,7 @@ function makeWorld() {
     world.s1.position.set(201.55, 43.6, 43.1 );
     //world.s1.name = 'object';
     world.s1.rotation.set(0.021975825449691403, -0.014816078383195446, -0.0026511761492486745);
+    
     //s2
     world.s2 = new THREE.Mesh(new THREE.BoxGeometry(30.5, 144.9, 90.9 ), new THREE.MeshBasicMaterial({color:0xffffff, wireframe:true}));
     world.scene.add(world.s2);
