@@ -250,8 +250,5 @@ function renderingContext(arg, index){
     makeSkybox(arg, index );
 };
 
-
-    
-  world.init();
-
+world.init();
 })();
