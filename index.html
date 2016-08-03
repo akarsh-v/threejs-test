@@ -234,13 +234,7 @@
     </div>
     <div id="info"></div>
     
-    <script>
-      window.world = window.world || {};
-
-     /* window.onload = function() {
-      world.init();
-      };*/
-    </script>
+ 
            
 	  <!-- javascript graphics library -->
 	  <script src="js/lib/three.min-r77.js"></script>
@@ -260,18 +254,16 @@
 	  <!--animation tween-->
 	  <script src="js/lib/tween.min.js"></script>
 	  <!-- main script-->
-	  <script src="js/controller.js"></script>
+	  <script>
+      window.world = window.world || {};
+
+    </script>
+	  <script src="js/textures.js"></script>
+	 
 	  <script src="js/main.js"></script>
-	   <script src="js/textures.js"></script>
+	   <script src="js/controller.js"></script>
+	  <script src="js/hotspot.js"></script>
 	 
 	  <script src="js/esg.js"></script>
-	  
-	  
-    <script>
-      world.controller();
-    </script>
-	  
-	 
-
 	</body>
 </html>

@@ -12,30 +12,18 @@
 //     \   \ ||  ,   / ;  :    ;|   :    |        |   :    .'    ;   :    /     ;   |.'|   :  ';  :        
 //      '---"  ---`-'  |  ,   / /    \  /         ;   | .'        \   \ .'      '---'   \   \    /         
 //                      ---`-'  `-'----'          `---'            `---`                 `---`--`          
-
-
 /*Vlib core for all threejs and vlib 
  *
  *Three.js-r77
  *
  */
-
+//This code should be concerned with Mesh, Material, Geometry
 
 (function () {
   "use strict";
-  //World object -> decide on world's properties
-//  window.world = window.world || {};
-  var domEvents;
- // window.sceneNo=0, window.sceneNum = 0;
-  //var defaultData, trans_obj;
-  var mouse = new THREE.Vector2(), rotSpeed = 0.1;
-  world.scene = {};
-  //what is this?
-  function bind(scope, func) {
-    return function bound() {
-      func.apply(scope, arguments);
-    };
-  }
+//Should figure the domEvents role, when needed and it may be a part of the controller
+  //var domEvents;
+
   
 //  #### ##    ## #### ######## 
 //   ##  ###   ##  ##     ##    
@@ -47,8 +35,7 @@
 
    //INIT is the OWNER
   /*
-   * init the scene, setup the camera, draw 3D objects and start the game loop
-   can be muultiple functions, for each action -> init scene, setup camera, and
+   * init scene, setup camera, and
    draw 3D objects
    */
 
@@ -59,7 +46,7 @@
     world.renderer = new THREE.WebGLRenderer({antialias: true});
   }
   else {
-    document.getElementById('container').innerHTML = '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><h1>You need a WebGL enabled browser to proceed.</h1>';
+    document.getElementById('world-container').innerHTML = '<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><h1>You need a WebGL enabled browser to proceed.</h1>';
    
   }
 }
@@ -72,18 +59,22 @@
   }
   
   //Camera Controls initialization
+  //Scene camera and control can go to rendering context function, with
+  //an argument container element - which is the html node,
+  //were #world-container is the container element
+
+   function bind(scope, func) {
+    return function bound() {
+      func.apply(scope, arguments);
+    };
+  }
+ 
   function setControls(){  
     world.controls = new THREE.OrbitControls(world.cam, world.renderer.domElement);
     //this.controls.enabled = false;
     world.controls.autoRotateSpeed = 0.3;
     world.controls.addEventListener('change', bind(world, world.render));
 }
-
-//makeWorld is the owner
-  function clearCanvas() {  //update scne depend on clearCanvas
-    world.scene.remove(world.sphere);
-    return null;
-  }
 
 
   world.init = function () {
@@ -95,65 +86,23 @@
   setCamProps();
 
   
-  // Set Camera Controls initialization -> should be able to pass arguments like
-  //Rotation speed and ...?
+  // Set Camera Controls initialization 
   setControls();
 
+  //TODO: should find a suitable place for this piece of dom functions
+  //probablly a rendering context function - added by salus sage
   this.renderer.setSize(window.innerWidth, window.innerHeight);
   document.getElementById('world-container').appendChild(this.renderer.domElement);
   
   //Scene initialization
   this.scene = new THREE.Scene();
-  
-  domEvents   = new THREEx.DomEvents(this.cam, this.renderer.domElement);
 
- 
-  //this.updateScene();
-
-  };
-  
-//  ##     ## ########  ########     ###    ######## ######## 
-//  ##     ## ##     ## ##     ##   ## ##      ##    ##       
-//  ##     ## ##     ## ##     ##  ##   ##     ##    ##       
-//  ##     ## ########  ##     ## ##     ##    ##    ######   
-//  ##     ## ##        ##     ## #########    ##    ##       
-//  ##     ## ##        ##     ## ##     ##    ##    ##       
-//   #######  ##        ########  ##     ##    ##    ########
-
- // ** Bhanu - Removed from update scene function **
- //Problem what is panoType?? array of 1's and 0's looks very cryptic
-    //Change Skyboxes -> which currently depends on user input,
-    //which updates a global state variable sceneNo or sceneNum
-    // var panoType = [1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1];
-
-    // Solution: add a "type" property to data structure values Equirectangural or cubic
-    //makepanorama will be function to deal both types
-    /*if(panoType[sceneNo] == 0)
-    { 
-      this.makeSkyBox();
-      this.scene.remove(world.sphere1);
-    }
-    else
-    {
-     this.makeSphericalPano();
-     this.scene.remove(world.panoMesh);
-    }*/
-    
-
-// This is run everytime the scene has to change.
-//who will be the owner of scene change? -> some user interaction -> Controller!!
-//So update scene boils down to makeWorld -> worldly Functions 
-
-  world.updateScene = function (type, texture, rotation, position) {
-    //this.renderer.clear( true, false );
-    //this.currentSkybox = this.skyboxs[sceneNo];
-    //hardcoding arguments for testing purpose
-
-    world.makeWorld(type, texture, rotation, position);
-
+  //initialize the scene with the first pano as default
+  this.updateScene(this.libCollection.type, this.libCollection.libRecord[0].pathToTexture,
+                   this.libCollection.libRecord[0].position, 
+                   this.libCollection.libRecord[0].rotation);
 
   };
-
 
   
 //     ###    ##    ## #### ##     ##    ###    ######## ########       ###    ##    ## ########     ########  ######## ##    ## ########  ######## ########  
@@ -163,7 +112,7 @@
 //  ######### ##  ####  ##  ##     ## #########    ##    ##          ######### ##  #### ##     ##    ##   ##   ##       ##  #### ##     ## ##       ##   ##   
 //  ##     ## ##   ###  ##  ##     ## ##     ##    ##    ##          ##     ## ##   ### ##     ##    ##    ##  ##       ##   ### ##     ## ##       ##    ##  
 //  ##     ## ##    ## #### ##     ## ##     ##    ##    ########    ##     ## ##    ## ########     ##     ## ######## ##    ## ########  ######## ##     ## 
-  //IS THIS NECESSARY? 
+
   world.animate = function () {      
     requestAnimationFrame(world.animate);
     world.controls.update();
@@ -184,14 +133,61 @@
 //        ## ##  ##      ##    ##     ## ##     ##   ## ##   
 //  ##    ## ##   ##     ##    ##     ## ##     ##  ##   ##  
 //   ######  ##    ##    ##    ########   #######  ##     ##
-// Cubic Panorama function
-  world.makeSkyBox = function () {
+
+//makeWorld is the owner
+  function clearCanvas() {  //update scene depend on clearCanvas
+    world.scene.remove(world.sphere);
+    return null;
+  }
+
+//set up scene - build walls, put curtains
+//TODO: add type handling for cubic and equirectangular -> world.makeskybox()
+function makeSkybox(type, texture, position, rotation){
+    clearCanvas();
+    if(type === "equirectangular"){
+        var spheretexture = new THREE.TextureLoader().load('panoramas/'+texture);
+        var geometry = new THREE.SphereGeometry(20000,50,50);
+        geometry.applyMatrix( new THREE.Matrix4().makeScale( 1, -1, 1 ) );
+        world.sphere = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map:spheretexture,
+                   side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 140}));
+        world.sphere.position.set(position.x, position.y, position.z);
+        world.sphere.name = 'sphere';
+        world.sphere.rotation.set(rotation.x, rotation.y, rotation.z);
+      
+      } else {
+        //this is not applicable with current data context
+        cubicSkybox();
+      }
+    world.scene.add(world.sphere);
+    renderingContext(texture, position, rotation);
+  }
+//set lights, camera, action - > SCENE
+function renderingContext(texture, position, rotation){
+  //Set cam position for the particular skybox image
+    world.cam.position.set(position.x,
+                          position.y,
+                          position.z);
+    world.cam.updateProjectionMatrix;
+    world.scene.add(world.cam);
+    //set cam controls -> depend on same campos with offset on x-axis
+    world.controls.target.set(position.x - 0.1,
+                             position.y,
+                             position.z);
+
+    // action!
+    world.animate.apply(world, arguments);
+}
+
+// create Cubic Panorama 
+//TODO: this needs more cleaning up to make dynamic - > need test data - added by salus sage
+// 
+  function cubicSkybox() {
     var url=['panoramas/' + this.currentSkybox + '/posx.jpg',
-	    'panoramas/' + this.currentSkybox + '/negx.jpg',
-	    'panoramas/' + this.currentSkybox + '/posy.jpg',
-	    'panoramas/' + this.currentSkybox + '/negy.jpg',
-	    'panoramas/' + this.currentSkybox + '/posz.jpg',
-	    'panoramas/' + this.currentSkybox + '/negz.jpg'],
+      'panoramas/' + this.currentSkybox + '/negx.jpg',
+      'panoramas/' + this.currentSkybox + '/posy.jpg',
+      'panoramas/' + this.currentSkybox + '/negy.jpg',
+      'panoramas/' + this.currentSkybox + '/posz.jpg',
+      'panoramas/' + this.currentSkybox + '/negz.jpg'],
     textureCube = THREE.CubeTextureLoader(url),
     material = new THREE.MeshBasicMaterial({ color: 0xffffff, envMap: textureCube }),
     panoMeshGeo = new THREE.BoxGeometry(-50000, -50000, -50000),
@@ -202,9 +198,9 @@
     for (i = 0; i < 6; i++) {
       var cubeMapTexture = new THREE.TextureLoader().load( url[i])
       materialArray.push(new THREE.MeshBasicMaterial({
-			 map: cubeMapTexture,
-			 side: THREE.FrontSide
-			 }));
+       map: cubeMapTexture,
+       side: THREE.FrontSide
+       }));
     }
     panoMeshMat = new THREE.MeshFaceMaterial(materialArray);
     this.panoMesh = new THREE.Mesh(panoMeshGeo, panoMeshMat);
@@ -227,57 +223,30 @@
     }
   };
 
-//set up scene - build walls, put curtains
-//TODO: add type handling for cubic and equirectangular -> world.makeskybox()
-  world.makeWorld = function(type, texture, position, rotation){
-    clearCanvas();
-    var spheretexture = new THREE.TextureLoader().load('panoramas/'+texture);
-    var geometry = new THREE.SphereGeometry(20000,50,50);
-    geometry.applyMatrix( new THREE.Matrix4().makeScale( 1, -1, 1 ) );
-    world.sphere = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map:spheretexture,
-                   side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 140}));
-    world.sphere.position.set(position.x, position.y, position.z);
-    world.sphere.name = 'sphere';
-    world.sphere.rotation.set(rotation.x, rotation.y, rotation.z);
-      var Spanos = this.scene.children.filter(function(item) {
-          return item.name == 'sphere';
-    });
-    world.scene.add(this.sphere);
-    world.worldyFunctions(texture, position, rotation);
-  }
-//set lights, camera, action
-  world.worldyFunctions = function(texture, position, rotation){
-  //Set cam position for the particular skybox image
-    this.cam.position.set(position.x,
-                          position.y,
-                          position.z);
-    this.cam.updateProjectionMatrix;
-    this.scene.add(this.cam);
-    //set cam controls -> depend on same campos with offset on x-axis
-    this.controls.target.set(position.x - 0.1,
-                             position.y,
-                             position.z);
-    //marker
-    this.trans_control = new THREE.TransformControls(this.cam,
-                                                     this.renderer.domElement);
-    this.trans_control.name = "trans_control";
-    this.trans_control.enabled = false;
-    this.scene.add(this.trans_control);
-    
-    
-    // action!
-    this.animate.apply(this, arguments);
 
-    // attach event handlers
-    this.controls.addEventListener('change', bind(this, this.render));
-    this.renderer.domElement.addEventListener('mousewheel',bind(this,
-                                         this.eventHandlers.onDocumentMouseWheel), false);
-    //this.renderer.domElement.addEventListener('mousedown',bind(this,this.eventHandlers.onClick),false);
-  // this.renderer.domElement.addEventListener('mousemove',bind(this,this.eventHandlers.onMouseMove),false);
-    window.addEventListener('keydown',bind(this, this.eventHandlers.onKeydown), false);
-    window.addEventListener('resize',bind(this, this.eventHandlers.onWindowResize),false);
+  
+//  ##     ## ########  ########     ###    ######## ######## 
+//  ##     ## ##     ## ##     ##   ## ##      ##    ##       
+//  ##     ## ##     ## ##     ##  ##   ##     ##    ##       
+//  ##     ## ########  ##     ## ##     ##    ##    ######   
+//  ##     ## ##        ##     ## #########    ##    ##       
+//  ##     ## ##        ##     ## ##     ##    ##    ##       
+//   #######  ##        ########  ##     ##    ##    ########
 
-}
+
+ 
+//Change Skyboxes -> which currently depends on user input,
+ 
+// This is run everytime the scene has to change.
+//who will be the owner of scene change? -> some user interaction -> Controller!!
+//So update scene is entry to makeWorld -> worldly Functions with arguments
+//type, texture, position and rotation in the same order
+
+  world.updateScene = function (type, texture, position, rotation) {
+    makeSkybox(type, texture, position, rotation);
+};
+
+
     
   world.init();
 

@@ -7,13 +7,29 @@
 //  ##         ## ##   ##       ##   ###    ##    ##    ## 
 //  ########    ###    ######## ##    ##    ##     ######  
 // all event handlers of the 3D world
-world.controller = function(){
+//Events and handlers
+(function(){
+  
+ world.controller = function(){
 
 
-  world.changePano = function (x) {
-    sceneNum = x;
- };
- 
+   function bind(scope, func) {
+    return function bound() {
+      func.apply(scope, arguments);
+    };
+  }
+   // attach event handlers to world
+    // TODO: Refactor of controllers pending, world.eventHandlers is undefined - added by salus sage
+    world.controls.addEventListener('change', bind(world, world.render));
+    document.getElementById('world-container').addEventListener('mousewheel',bind(world,
+                                         world.eventHandlers.onDocumentMouseWheel), false);
+    window.addEventListener('keydown',bind(world, world.eventHandlers.onKeydown), false);
+    window.addEventListener('resize',bind(world, world.eventHandlers.onWindowResize),false);
+  
+
+  var mouse = new THREE.Vector2(), rotSpeed = 0.1;
+
+    
   world.zoom = function (x) {
     if (this.cam.fov >=20 && this.cam.fov <=85 ) {
     if (x == 0) {
@@ -86,42 +102,39 @@ world.controller = function(){
       this.controls.autoRotate = false;
     }
   };
-  
-    
-
-
-  world.eventHandlers = {
+}
+ world.eventHandlers = {
     onDocumentMouseWheel: function (event) {
       
 
       // WebKit
       //fov limits = 20 and 85
       if (this.cam.fov >=20 && this.cam.fov <=85 ) {
-	
+  
       
       if ( event.wheelDeltaY ) {
-	this.cam.fov -= event.wheelDeltaY * 0.005;
+  this.cam.fov -= event.wheelDeltaY * 0.005;
       }
       // Opera / Explorer 9
       else if ( event.wheelDelta ) {
-	this.cam.fov -= event.wheelDelta * 0.005;
+  this.cam.fov -= event.wheelDelta * 0.005;
       }
       // Firefox
       else if ( event.detail ) {
-	this.cam.fov -= event.detail * 0.05;
-      }	
+  this.cam.fov -= event.detail * 0.05;
+      } 
       
       }
       else if(this.cam.fov < 20 ){
-	this.cam.fov = 20;
+  this.cam.fov = 20;
       }
       else if(this.cam.fov > 85 ){
-	this.cam.fov = 85;
+  this.cam.fov = 85;
       }
       this.cam.updateProjectionMatrix();
       console.log(this.cam.fov);
     },
-			
+      
     onClick: function (event) {
       event.preventDefault();
       var info;
@@ -131,116 +144,82 @@ world.controller = function(){
       raycaster.setFromCamera( mouse, this.cam );
       var intersects = raycaster.intersectObjects( this.scene.children );
       if ( intersects.length > 0 ) {
-	for (var i = 0; i < intersects.length; i++) {
-	  //for (var j = 0; j < trans_obj.length; j++) {
-	    if (intersects[i].object.name === 'philly_object') {
-	      console.log(intersects[i].object.name);
-	      this.controls.enabled = false;
-	      this.trans_control.attach(intersects[i].object);
-	      this.trans_control.enabled = true;
-	      //display some help info
-	      info = '<small>Keys | t : translate | y : scale |' +
-	      ' r : rotate | u : quit </small>';
-	      document.getElementById('info').innerHTML = info;
-	      
-	    //}
-	    }
-	    for(var k=0; k< world.hotspots.length; k++)
-	    { var name = 'hs'+k;
-		if (intersects[i].object.name == name){
-		  
-		sceneNum = k;
-		info = 'This is '+ k + ' Pano';
-		
-		document.getElementById('info').innerHTML = info;
-	      }
-	    }
-	 
-	} 
+  for (var i = 0; i < intersects.length; i++) {
+   
+      if (intersects[i].object.name === 'philly_object') {
+        console.log(intersects[i].object.name);
+        this.controls.enabled = false;
+        this.trans_control.attach(intersects[i].object);
+        this.trans_control.enabled = true;
+        //display some help info
+        info = '<small>Keys | t : translate | y : scale |' +
+        ' r : rotate | u : quit </small>';
+        document.getElementById('info').innerHTML = info;
+        
+    
+      }
+      for(var k=0; k< world.hotspots.length; k++)
+      { var name = 'hs'+k;
+    if (intersects[i].object.name == name){
+      
+    sceneNum = k;
+    info = 'This is '+ k + ' Pano';
+    
+    document.getElementById('info').innerHTML = info;
+        }
+      }
+   
+  } 
       }
     },
-    /*onMouseMove: function (event) {
-      //event.preventDefault();
-      var flag = false;
-      var intersectsObject;
-      mouse.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1 );
-      var raycaster = new THREE.Raycaster();
-      raycaster.setFromCamera( mouse, this.cam );
-      var intersects = raycaster.intersectObjects( this.scene.children );
-      if ( intersects.length > 0 ) {
-	for (var i = 0; i < intersects.length; i++) {
-	  for(var k=0; k< world.hotspots.length; k++)
-	    { var name = 'hs'+k;
-		if (intersects[i].object.name == name){
-		intersects[i].object.position.y-=10;
-		flag = true;
-		intersectsObject = intersects[i].object;
-		console.log('1');
-		 
-		
-	      }
-	      else {
-		if(flag == true){
-		intersectsObject.position.y+=10;
-		flag = false;
-		console.log('2');
-		}
-		else {console.log('3');}
-		
-	      }
-	    }
-	}
-      }
-	
-      
-    },*/
+
     
     onKeydown: function (event) {
       
-      var variable = this.sphere1.rotation;
+      var variable = this.sphere.rotation;
       switch (event.keyCode) {
-	
-	case 85: // U
-	  this.trans_control.enabled = false;
-	  this.controls.enabled = true;
-	  // is there something to detach this object? confirm it
-	  this.trans_control.detach(this.trans_control.object);
-	  document.getElementById('info').innerHTML = '';
-	  break;
-	case 82: // R
-	  this.trans_control.setMode("rotate");
-	  break;
-	case 89: // Y
-	  this.trans_control.setMode("scale");
-	  break;
-	case 84: // T
-	  this.trans_control.setMode("translate");
-	  break;
-	//for rotation of panorama sphere
-	case 65: // A
-	  variable.x-=rotSpeed;
-	  document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
-	  break;
+  
+  case 85: // U
+    this.trans_control.enabled = false;
+    this.controls.enabled = true;
+    // is there something to detach this object? confirm it
+    this.trans_control.detach(this.trans_control.object);
+    document.getElementById('info').innerHTML = '';
+    break;
+  case 82: // R
+    this.trans_control.setMode("rotate");
+    break;
+  case 89: // Y
+    this.trans_control.setMode("scale");
+    break;
+  case 84: // T
+    this.trans_control.setMode("translate");
+    break;
+  //for rotation of panorama sphere
+  case 65: // A
+    variable.x-=rotSpeed;
+    document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
+    break;
         case 68: //D
-	  variable.x+=rotSpeed;
-	  document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
-	  break;
-	case 87: //W
-	  variable.y+=rotSpeed;
-	  document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
-	  break;
-	case 83: //S
-	  variable.y-=rotSpeed;
-	  document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
-	  break;
-	case 81: //Q
-	  variable.z+=rotSpeed;
-	  document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
-	  break;
-	case 69: //E
-	  
-	  //variable.z-=rotSpeed;
-	  //document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
+    variable.x+=rotSpeed;
+    document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
+    break;
+  case 87: //W
+    variable.y+=rotSpeed;
+    document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
+    break;
+  case 83: //S
+    variable.y-=rotSpeed;
+    document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
+    break;
+  case 81: //Q
+    variable.z+=rotSpeed;
+    document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
+    break;
+  case 69: //E
+    
+    //variable.z-=rotSpeed;
+    //document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
 
 //document.webkitExitFullscreen()
 //document.webkitCancelFullScreen();
@@ -249,11 +228,11 @@ world.controller = function(){
          
         
 
-	  break;
-	case 90: //Z
-	 // rotSpeed = 0.1;
-	 //
-	/* var element = document.getElementById('container');
+    break;
+  case 90: //Z
+   // rotSpeed = 0.1;
+   //
+  /* var element = document.getElementById('container');
     // Supports most browsers and their versions.
     var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
 console.log(requestMethod);
@@ -266,14 +245,14 @@ console.log(requestMethod);
         }
     }
 
-	 var el = document;
+   var el = document;
             var requestMethod = el.cancelFullScreen||el.webkitExitFullScreen||el.mozCancelFullScreen||el.exitFullscreen;
             
                if (requestMethod) { // cancel full screen.
-		
+    
                 requestMethod.call(el);
-		console.log(requestMethod);
-		
+    console.log(requestMethod);
+    
             } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
                 var wscript = new ActiveXObject("WScript.Shell");
                 if (wscript !== null) {
@@ -281,31 +260,31 @@ console.log(requestMethod);
                 }
             }
        
-	document.mozCancelFullScreen();
-	console.log('s');
+  document.mozCancelFullScreen();
+  console.log('s');
 
  */
-	//document.getElementById('container').webkitRequestFullScreen();
-	this.controls.enabled = false;
-	      this.trans_control.attach(this.philly_selector);
-	      this.trans_control.enabled = true;
-	      //display some help info
-	     /* info = '<small>Keys | t : translate | y : scale |' +
-	      ' r : rotate | u : quit </small>';
-	      document.getElementById('info').innerHTML = info;*/
-	      
+  //document.getElementById('container').webkitRequestFullScreen();
+  this.controls.enabled = false;
+        this.trans_control.attach(this.philly_selector);
+        this.trans_control.enabled = true;
+        //display some help info
+       /* info = '<small>Keys | t : translate | y : scale |' +
+        ' r : rotate | u : quit </small>';
+        document.getElementById('info').innerHTML = info;*/
+        
 
 
-	
+  
   
 
-	  break;
-	case 88: //X
-	  rotSpeed = 0.01;
-	  break;
-	  
-	    
-	
+    break;
+  case 88: //X
+    rotSpeed = 0.01;
+    break;
+    
+      
+  
       }
     },
     onWindowResize: function (event) {
@@ -315,8 +294,6 @@ console.log(requestMethod);
       this.renderer.setSize(window.innerWidth, window.innerHeight);
       this.render();
     }
-
 }
-
-
-}
+world.controller();
+})();
