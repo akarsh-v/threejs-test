@@ -11,7 +11,7 @@
 (function(){
   
  world.controller = function(){
-
+ window.worldController = {}; 
 
    function bind(scope, func) {
     return function bound() {
@@ -218,13 +218,10 @@
     break;
   case 69: //E
     
-    //variable.z-=rotSpeed;
-    //document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
+    variable.z-=rotSpeed;
+    document.getElementById('info').innerHTML = 'rotation is' +variable.x +',' +variable.y+','+variable.z;
 
-//document.webkitExitFullscreen()
-//document.webkitCancelFullScreen();
-//document.mozCancelFullScreen();
-//console.log('s');
+
          
         
 
