@@ -99,7 +99,7 @@
 
   
   //initialize the scene with the first pano as default
-  this.updateScene(API.libCollection, 0);
+  this.updateScene(API.library.libRecord, 0);
 
   };
 
@@ -143,20 +143,20 @@
 //TODO: add type handling for cubic and equirectangular -> world.makeskybox()
 function makeSkybox(arg, index){
     clearCanvas();
-    console.log(arg, index, 'panoramas/'+arg.libRecord[index].pathToTexture);
+   
     if(arg.type === "equirectangular"){
-        var spheretexture = new THREE.TextureLoader().load('panoramas/'+arg.libRecord[index].pathToTexture);
+        var spheretexture = new THREE.TextureLoader().load(arg.collection[index].pathToTexture);
         var geometry = new THREE.SphereGeometry(20000,50,50);
         geometry.applyMatrix( new THREE.Matrix4().makeScale( 1, -1, 1 ) );
         world.sphere = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map:spheretexture,
                    side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 140}));
-        world.sphere.position.set(arg.libRecord[index].position.x, 
-                                  arg.libRecord[index].position.y, 
-                                  arg.libRecord[index].position.z);
+        world.sphere.position.set(arg.collection[index].position.x, 
+                                  arg.collection[index].position.y, 
+                                  arg.collection[index].position.z);
         world.sphere.name = 'sphere';
-        world.sphere.rotation.set(arg.libRecord[index].rotation.x, 
-                                  arg.libRecord[index].rotation.y, 
-                                  arg.libRecord[index].rotation.z);
+        world.sphere.rotation.set(arg.collection[index].rotation.x, 
+                                  arg.collection[index].rotation.y, 
+                                  arg.collection[index].rotation.z);
       
       } else {
         //this is not applicable with current data context
@@ -168,15 +168,15 @@ function makeSkybox(arg, index){
 //set lights, camera, action - > SCENE
 function renderingContext(arg, index){
   //Set cam position for the particular skybox image
-    world.cam.position.set(arg.libRecord[index].position.x,
-                           arg.libRecord[index].position.y,
-                           arg.libRecord[index].position.z);
+    world.cam.position.set(arg.collection[index].position.x,
+                           arg.collection[index].position.y,
+                           arg.collection[index].position.z);
     world.cam.updateProjectionMatrix;
     world.scene.add(world.cam);
     //set cam controls -> depend on same campos with offset on x-axis
-    world.controls.target.set(arg.libRecord[index].position.x - 0.1,
-                              arg.libRecord[index].position.y,
-                              arg.libRecord[index].position.z);
+    world.controls.target.set(arg.collection[index].position.x - 0.1,
+                              arg.collection[index].position.y,
+                              arg.collection[index].position.z);
 
     // action!
     world.animate.apply(world, arguments);

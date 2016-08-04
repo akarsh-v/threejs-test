@@ -12,11 +12,11 @@
 	    var $node =  $(node);
 	    $node.bind({
 	      click: function(e){
-	         world.updateScene(API.libCollection, e.currentTarget.text);          
+	         world.updateScene(API.library.libRecord, e.currentTarget.text);          
 	      }
 	    });
 	    $('#world-nav').append($node);
 	  }
 	} 
-	makeNav(API.libCollection.libRecord);
+	makeNav(API.library.libRecord.collection);
 })();
