@@ -8,6 +8,7 @@
 	        <!-- Bootstrap-->
 		<link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/theme.css">
+		<link rel="stylesheet" href="css/horizontalmenu.css">
 	</head>
 
 
@@ -29,6 +30,22 @@
 		     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		      <ul class="nav navbar-nav">
 		        <li><a href="#" data-toggle="modal" data-target="#myModal">HELP</a></li>
+		        <li>
+		        <div class="container">
+		            <div class="col-md-12">
+		                <div class="carousel slide" id="myCarousel">
+		                	 <div class="carousel-inner" id="thumb-slider">
+		                	 </div>
+
+		               
+		                	<a class="left carousel-control" href="#myCarousel" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
+		                  <a class="right carousel-control" href="#myCarousel" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
+		                   </div>
+		                </div>
+		            </div>
+		        </div>
+		        		
+		       </li>
 		      </ul>
 		    </div>
 		  </div>
@@ -58,16 +75,19 @@
 		</div>
 
 
-		<div id='world-nav'>
+
+
+			    
+
 			<!--UI - Controls-> zoom, fullsize, autoscroll-->
-		<a href="#" class="btn btn-default btn-sm" id="resizef" onclick='worldToScreenEvents.fullScreen(0)'><span class="glyphicon glyphicon-resize-full"></span> </a>
-		<a href="#" class="btn btn-default btn-sm" id="resizes" onclick='worldToScreenEvents.fullScreen(1)'><span class="glyphicon glyphicon-resize-small"></span> </a>
+		<a href="javascript:void(0)" class="btn btn-default btn-sm" id="resizef" onclick='worldToScreenEvents.fullScreen(0)'><span class="glyphicon glyphicon-resize-full"></span> </a>
+		<a href="javascript:void(0)" class="btn btn-default btn-sm" id="resizes" onclick='worldToScreenEvents.fullScreen(1)'><span class="glyphicon glyphicon-resize-small"></span> </a>
 		<!--zoom-->
-		<a href="#" class="btn btn-default btn-sm" id="zoomp" onclick="worldToScreenEvents.zoom(0)"><span class="glyphicon glyphicon-plus"></span> </a>
-		<a href="#" class="btn btn-default btn-sm"id="zoomm" onclick="worldToScreenEvents.zoom(1)"><span class="glyphicon glyphicon-minus"></span> </a>
+		<a href="javascript:void(0)" class="btn btn-default btn-sm" id="zoomp" onclick="worldToScreenEvents.zoom(0)"><span class="glyphicon glyphicon-plus"></span> </a>
+		<a href="javascript:void(0)" class="btn btn-default btn-sm"id="zoomm" onclick="worldToScreenEvents.zoom(1)"><span class="glyphicon glyphicon-minus"></span> </a>
 		<!--auto rotate-->
-		<a href="#" class="btn btn-default btn-sm" id="autorotateplay" onclick='worldToScreenEvents.autoRotate(0)'><span class="glyphicon glyphicon-play"></span> </a>
-		<a href="#" class="btn btn-default btn-sm" id="autorotatepause" onclick='worldToScreenEvents.autoRotate(1)'><span class="glyphicon glyphicon-pause"></span> </a>
+		<a href="javascript:void(0)" class="btn btn-default btn-sm" id="autorotateplay" onclick='worldToScreenEvents.autoRotate(0)'><span class="glyphicon glyphicon-play"></span> </a>
+		<a href="javascript:void(0)" class="btn btn-default btn-sm" id="autorotatepause" onclick='worldToScreenEvents.autoRotate(1)'><span class="glyphicon glyphicon-pause"></span> </a>
 		</div>	
 
     </div>
@@ -91,15 +111,23 @@
     	<script src="js/lib/threex.linkify.js"></script>
     	  
     	<!-- application scripts-->
+    	<script src="js/lib/routie.js"></script>
+    	<script src="js/lib/underscore-min.js"></script>
+    	
     	<script>
     	// create the world object -> a Threejs view, controller and model--> 
           window.world = window.world || {};
     	</script>
 
+
     	<script src="js/model.js"></script>    	 
+    	
     	<script src="js/threeView.js"></script>
     	<script src="js/controller.js"></script>
+    	<script src="js/routes.js"></script>
     	<script src="js/hotspot.js"></script>
     	<script src="js/main.js"></script>
+    	
+
   </body>
 </html>

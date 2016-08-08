@@ -35,7 +35,7 @@
  },
 
  fullScreen: function (x) {
-   
+      console.log(x);
      if (x == 0) {
        document.getElementById('resizef').style.visibility = 'hidden';
        document.getElementById('resizes').style.visibility = 'visible';
@@ -71,6 +71,7 @@
        //document.webkitCancelFullScreen();
      }
      }
+    
   },
 
 

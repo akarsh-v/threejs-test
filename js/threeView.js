@@ -96,11 +96,6 @@
   
   //Scene initialization
   this.scene = new THREE.Scene();
-
-  
-  //initialize the scene with the first pano as default
-  this.updateScene(API.library.libRecord, 0);
-
   };
 
   
