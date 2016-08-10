@@ -129,36 +129,48 @@
 //   ######  ##    ##    ##    ########   #######  ##     ##
 
 //makeWorld is the owner
-  function clearCanvas() {  //update scene depend on clearCanvas
-    world.scene.remove(world.sphere);
+  function clearCanvas(arg, index) {  //update scene depend on clearCanvas
+    
+    if(arg.type === "equirectangular")
+    {
+      if (index == 0 && typeof world.sphere == 'undefined')
+      {
+        makeSkybox(arg, index );
+      } 
+      else
+      {
+        world.spheretexture.dispose();
+      }
+      world.spheretexture = new THREE.TextureLoader().load(arg.collection[index].pathToTexture);
+      world.spherematerial.map = world.spheretexture;
+      world.spherematerial.needsUpdate = true;
+      renderingContext(arg, index);
+    };
     return null;
+  
   }
-
+  
 //set up scene - build walls, put curtains
 //TODO: add type handling for cubic and equirectangular -> world.makeskybox()
-function makeSkybox(arg, index){
-    clearCanvas();
-   
-    if(arg.type === "equirectangular"){
-        var spheretexture = new THREE.TextureLoader().load(arg.collection[index].pathToTexture);
-        var geometry = new THREE.SphereGeometry(20000,50,50);
-        geometry.applyMatrix( new THREE.Matrix4().makeScale( 1, -1, 1 ) );
-        world.sphere = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({map:spheretexture,
-                   side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: 140}));
-        world.sphere.position.set(arg.collection[index].position.x, 
-                                  arg.collection[index].position.y, 
-                                  arg.collection[index].position.z);
-        world.sphere.name = 'sphere';
-        world.sphere.rotation.set(arg.collection[index].rotation.x, 
-                                  arg.collection[index].rotation.y, 
-                                  arg.collection[index].rotation.z);
-      
-      } else {
-        //this is not applicable with current data context
-        cubicSkybox();
-      }
+function makeSkybox(arg){
+    
+    if(arg.type === "equirectangular")
+    {
+      world.spheregeometry = new THREE.SphereGeometry(20000,50,50);
+      world.spheregeometry.applyMatrix( new THREE.Matrix4().makeScale( 1, -1, 1 ));
+      world.spherematerial = new THREE.MeshBasicMaterial({side: THREE.FrontSide})
+      world.spherematerial.needsUpdate = true;
+      world.sphere = new THREE.Mesh(world.spheregeometry, world.spherematerial);
+      world.sphere.name = 'sphere';
+    }
+    else
+    {
+      //this is not applicable with current data context
+      cubicSkybox();
+    }
+    
     world.scene.add(world.sphere);
-    renderingContext(arg, index);
+    
   }
 //set lights, camera, action - > SCENE
 function renderingContext(arg, index){
@@ -172,7 +184,13 @@ function renderingContext(arg, index){
     world.controls.target.set(arg.collection[index].position.x - 0.1,
                               arg.collection[index].position.y,
                               arg.collection[index].position.z);
-
+    world.sphere.position.set(arg.collection[index].position.x, 
+                              arg.collection[index].position.y, 
+                              arg.collection[index].position.z);
+    world.sphere.rotation.set(arg.collection[index].rotation.x, 
+                              arg.collection[index].rotation.y, 
+                              arg.collection[index].rotation.z);
+      
     // action!
     world.animate.apply(world, arguments);
 }
@@ -242,7 +260,8 @@ function renderingContext(arg, index){
 //type, texture, position and rotation in the same order
 
   world.updateScene = function (arg, index) {
-    makeSkybox(arg, index );
+    clearCanvas(arg, index);
+    
 };
 
 world.init();
