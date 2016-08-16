@@ -75,7 +75,11 @@
     world.controls.autoRotateSpeed = 0.3;
     world.controls.addEventListener('change', bind(world, world.render));
 }
-
+  
+  function setStats(){
+    world.stats = new Stats();
+    document.getElementById('world-container').appendChild( world.stats.dom );
+  }
 
   world.init = function () {
 
@@ -88,6 +92,9 @@
   
   // Set Camera Controls initialization 
   setControls();
+
+  //stats
+  setStats();
 
   //TODO: should find a suitable place for this piece of dom functions
   //probablly a rendering context function - added by salus sage
@@ -109,7 +116,7 @@
 
   world.animate = function () {      
     requestAnimationFrame(world.animate);
-    world.controls.update();
+    world.stats.update();
     world.render.apply(world, arguments);
   };
 
